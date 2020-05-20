@@ -9,30 +9,85 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
   fig.path = "man/figures/README-",
-  out.width = "100%"
+  out.width = "65%"
 )
 ```
 
 # gbatr
 
 <!-- badges: start -->
+[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 <!-- badges: end -->
 
-The goal of gbatr is to ...
+gbatr is an interface to [Geosupport Dektop Edition](https://www1.nyc.gov/site/planning/data-maps/open-data/dwn-gde-home.page), a batch geocoder for New York City created by the NYC Department of City Planning. It enables very fast local geocoding of NYC addresses. This is a fork of the [rGBAT16AB pacakge](https://github.com/gmculp/rGBAT16AB) developed by GM Culp.
+
+## Why gbatr?
+
+* fast
+* local
+* free
+* can be scripted
 
 ## Installation
 
-You can install the released version of gbatr from [CRAN](https://CRAN.R-project.org) with:
+Before you install gbatr, you must have Geosupport Desktop Edition installed. Geosupport is a free geocoding application developed by the NYC Department of City Planning. It is available for Windows and Linux and can be downloaded from the [City Planning website](https://www1.nyc.gov/site/planning/data-maps/open-data/dwn-gde-home.page). For now, gbatr has only been tested using the Windows 64-bit version of Geosupport, so let me know if you're having troubling installing on Linux or 32-bit Windows.
 
-``` r
-install.packages("gbatr")
+When installing Geosupport Desktop, it is strongly recommended to use the default installation path (`C:/Program Files/Geosupport Desktop Edition`). If you install it in this location, building gbatr from source should just work. If you can't install it in this location, you may have to do some additional work to build gbatr.
+
+Once you have Geosupport Desktop Edition installed, the easiest way to install gbatr is by using the [remotes package](https://remotes.r-lib.org/):
+
+```{r eval=FALSE}
+remotes::install_github("mfherman/gbatr")
 ```
 
-## Example
+## Usage
 
-This is a basic example which shows you how to solve a common problem:
+Geocoding is the process of converting places or addresses to geographic points, commonly latitiude and longitude or x and y coordinates. To use gbatr to geocode addresses, first prepare a data frame that contains a column of street addresses and a column with either zip codes or boroughs. The zip or borough column must all zip codes or all boroughs, not a mix of both.
 
-```{r example}
+Then, call the `gbat()` function and specify the input data frame, the name of the the address column, the name of the zip or borough column, whether you are using zip codes or boroughs, and which geocoded fields you want to get back from the GBAT geocoder. This last argument is optional, and if ommitted, all 203 fields from GBAT functions 1A, 1E, and AP are returned.
+
+```{r}
 library(gbatr)
-## basic example code
+
+za <- tibble::tribble(
+  ~name,                 ~address,              ~borough,
+  "Roberta's",           "261 Moore Street",    "Brooklyn",
+  "L'Industrie",         "254 S 2nd Stret",     "Brooklyn",
+  "Emmy Squared",        "364 Grand Street",    "Brooklyn",
+  "Di Fara",             "1424 Avenue J",       "Brooklyn",
+  "L&B Spumoni Gardens", "2725 86th Street",    "Brooklyn",
+  "Totonno's",           "1524 Neptune Avenue", "Broklyn"
+  )
+
+za_geo <- gbat(
+  za,
+  address = "address",
+  zip_boro = "borough",
+  zip_boro_type = "boro",
+  geo_colnames = "lot_centroid_latlon"
+  )
+
+za_geo
 ```
+
+### Specifying return columns
+
+### Dealing with failure
+
+### GBAT functions
+
+### Converting to `sf` objects and mapping
+
+```{r, eval=FALSE}
+za_geo %>%
+  sf::st_as_sf(
+    coords = c("F1A_Longitude", "F1A_Latitude"),
+    crs = 4326
+    ) %>%
+  mapview::mapview()
+```
+
+
+
+
+
