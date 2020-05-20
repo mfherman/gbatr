@@ -74,7 +74,7 @@ za <- tibble::tribble(
   "Emmy Squared",        "364 Grand Street",    "Brooklyn",
   "Di Fara",             "1424 Avenue J",       "Brooklyn",
   "L&B Spumoni Gardens", "2725 86th Street",    "Brooklyn",
-  "Totonno's",           "1524 Neptune Avenue", "Broklyn"
+  "Totonno's",           "1524 Neptune Avenue", "Brooklyn"
   )
 
 za_geo <- gbat(
@@ -89,12 +89,12 @@ za_geo
 #> # A tibble: 6 x 5
 #>   name                address             borough  F1A_Latitude F1A_Longitude
 #>   <chr>               <chr>               <chr>    <chr>        <chr>        
-#> 1 Roberta's           261 Moore Street    Brooklyn "40.705171"  "-73.934116" 
-#> 2 L'Industrie         254 S 2nd Stret     Brooklyn "40.711481"  "-73.957848" 
-#> 3 Emmy Squared        364 Grand Street    Brooklyn "40.712164"  "-73.955708" 
-#> 4 Di Fara             1424 Avenue J       Brooklyn "40.624923"  "-73.961487" 
-#> 5 L&B Spumoni Gardens 2725 86th Street    Brooklyn "40.594672"  "-73.981269" 
-#> 6 Totonno's           1524 Neptune Avenue Broklyn  ""           ""
+#> 1 Roberta's           261 Moore Street    Brooklyn 40.705171    -73.934116   
+#> 2 L'Industrie         254 S 2nd Stret     Brooklyn 40.711481    -73.957848   
+#> 3 Emmy Squared        364 Grand Street    Brooklyn 40.712164    -73.955708   
+#> 4 Di Fara             1424 Avenue J       Brooklyn 40.624923    -73.961487   
+#> 5 L&B Spumoni Gardens 2725 86th Street    Brooklyn 40.594672    -73.981269   
+#> 6 Totonno's           1524 Neptune Avenue Brooklyn 40.578802    -73.983811
 ```
 
 ### Specifying return columns

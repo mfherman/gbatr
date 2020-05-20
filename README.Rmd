@@ -56,7 +56,7 @@ za <- tibble::tribble(
   "Emmy Squared",        "364 Grand Street",    "Brooklyn",
   "Di Fara",             "1424 Avenue J",       "Brooklyn",
   "L&B Spumoni Gardens", "2725 86th Street",    "Brooklyn",
-  "Totonno's",           "1524 Neptune Avenue", "Broklyn"
+  "Totonno's",           "1524 Neptune Avenue", "Brooklyn"
   )
 
 za_geo <- gbat(
