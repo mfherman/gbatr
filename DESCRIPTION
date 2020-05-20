@@ -1,0 +1,32 @@
+Type: Package
+Package: gbatr
+Title: An R interface to the NYCgbat batch geocoder
+Version: 0.1
+Description: gbatr is an interface to Geosupport Dektop Edition, a batch 
+    geocoder for New York City created by the NYC Department of City Planning.
+    It enables very fast local geocoding of NYC addresses. To build and use this
+    package, you must first install Geosupport Desktop Edition. This is a fork
+    of the rGBAT16AB pacakge developed by GM Culp.
+Authors@R: c(
+    person(given = "GM",
+           family = "Culp",
+           role = c("aut", "cre"),
+           email = "gculp@health.nyc.gov"),
+    person(given = "Matt",
+           family = "Herman",
+           role = "aut",
+           email = "mfherman@gmail.com"))
+Maintainer: Matt Herman <mfherman@gmail.com>
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.1.0
+LinkingTo: 
+    Rcpp
+Imports: 
+    Rcpp
+Suggests:
+    tibble
+Roxygen: list(markdown = TRUE)
+Depends: 
+    R (>= 2.10)

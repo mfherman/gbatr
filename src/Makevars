@@ -1,0 +1,5 @@
+##path 1 = location of NYCgeo.dll file after GBAT install
+PKG_LIBS = -L"C:/Program Files/Geosupport Desktop Edition/Bin" -lNYCgeo
+
+##path 1 = location of NYCgeo.h and pac.h files after GBAT install
+PKG_CPPFLAGS =  -I"C:/Program Files/Geosupport Desktop Edition/Include"

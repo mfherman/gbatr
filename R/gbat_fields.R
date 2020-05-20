@@ -1,0 +1,16 @@
+#' Available fields returned by the GBAT geocoder
+#'
+#' A dataset containing all the possible fields returned by the GBAT geocoder
+#' as well as what function they belong to. Use this dataset to explore the available
+#' geographis and boundaries to be returned when geocoding.
+#'
+#' @format A tibble with 197 rows and 5 variables:
+#' \describe{
+#'   \item{field}{field returned by GBAT}
+#'   \item{func}{function that each field is part of}
+#'   \item{col_name}{name of column in GBAT output}
+#'   \item{length}{length of field in GBAT output}
+#'   \item{start}{used internally for parsing GBAT output}
+#'   \item{end}{used internally for parsing GBAT output}
+#' }
+"gbat_fields"
