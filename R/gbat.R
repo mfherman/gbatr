@@ -5,14 +5,19 @@
 #'
 #' @param df An input data frame to geocode
 #' @param address Name of street address column in input data frame
-#' @param zip_boro Name of zip code or borough code column in input data frame
+#' @param zip_boro Name of zip code or borough code column in input data frame.
+#'   For convinience, borough codes in the input data can be borough codes
+#'   (`"1"`, `"2"`, `"3"`, `"4"`, `"5"`), borough names (`"Manhattan"`,
+#'   `"Bronx"`, `"Brooklyn"`, `"Queens"`, `"Staten Island"`), county names
+#'   (`"New York"`, `"Bronx"`, `"Kings"`, `"Queens"`, `"Richmond"`), or a mix of
+#'   the three types.
 #' @param zip_boro_type The `zip_boro` column type in the input data frame.
 #'   Either `"zip"` or `"boro"`, defaults to `"zip"`.
-#' @param func GBAT output function columns to return. One or more of `"F1A"`,
-#'   `"F1E"`, and `"FAP"`. Defaults to all three functions.
 #' @param geo_colnames A character vector of column names to return from the
 #'   GBAT geocoder or one of more GBAT "short cut." See below for details. If
 #'   `NULL` (the default), all GBAT fields are returned.
+#' @param func GBAT output function columns to return. One or more of `"F1A"`,
+#'   `"F1E"`, and `"FAP"`. Defaults to all three functions.
 #' @param append Whether or not to append the GBAT geocoder output to the input
 #'   data frame or just return the geocoder output. Defaults to `TRUE`.
 #'
@@ -23,26 +28,25 @@
 #'   geocoder, there are a handful of "short cuts" you can use in the
 #'   `geo_colnames` argument to return certain fields.
 #'
-#'   * `"lot_centrold_xy"` - `"F1A_Xcoordinate"`, `"F1A_Ycoordinate"`
-#'   * `"lot_centroid_latlon"` - `"F1A_Xcoordinate"`, `"F1A_Ycoordinate"`
-#'   * `"building_face_xy"` - `"F1E_XCoordinate"`, `"F1E_YCoordinate"`
-#'   * `"building_face_latlon"` - `"F1E_Latitude"`, `"F1E_Longitude"`
-#'   * `"cd"` - `"F1E_CommunityDistrict"`
-#'   * `"nta"` - `"F1E_NTA"`, `"F1E_NTAName"`
-#'   * `"census_tract"` - `"F1E_2010CensusTractGEOID"`
-#'   * `"census_block"` - `"F1E_2010CensusBlockGEOID"`
+#'   * `"lot_centrold_xy"` -- `"F1A_Xcoordinate"`, `"F1A_Ycoordinate"`
+#'   * `"lot_centroid_latlon"` -- `"F1A_Xcoordinate"`, `"F1A_Ycoordinate"`
+#'   * `"building_face_xy"` -- `"F1E_XCoordinate"`, `"F1E_YCoordinate"`
+#'   * `"building_face_latlon"` -- `"F1E_Latitude"`, `"F1E_Longitude"`
+#'   * `"cd"` -- `"F1E_CommunityDistrict"`
+#'   * `"nta"` -- `"F1E_NTA"`, `"F1E_NTAName"`
+#'   * `"census_tract"` -- `"F1E_2010CensusTractGEOID"`
+#'   * `"census_block"` -- `"F1E_2010CensusBlockGEOID"`
 #'
 #' @export
 #'
 #' @examples
 #'
 #' df <- data.frame(
-#'   office = c("HQ", "Bronx South"),
-#'   address = c("150 William Street", "2501 Grand Concourse"),
-#'   zip_code = c("10038", "10468")
+#'   address = c("261 Moore Street", "1524 Neptune Avenue"),
+#'   zip_code = c("11206", "11224")
 #'   )
 #'
-#' gbat(df, "address", "zip_code", "zip", geo_colnames = c("cd", lot_centroid_xy"))
+#' gbat(df, "address", "zip_code", "zip", geo_colnames = "lot_centroid_latlon")
 
 gbat <- function(df, address, zip_boro, zip_boro_type = c("zip", "boro"),
                  func = c("F1A", "F1E", "FAP"), geo_colnames = NULL,
@@ -86,8 +90,20 @@ gbat <- function(df, address, zip_boro, zip_boro_type = c("zip", "boro"),
          call. = FALSE)
   }
 
-  # make a copy of input data because we may use the input data frame at the end
+  # make a copy of input data because we may need to use the input data frame at the end
+  # TODO: will this slow things down too much? probably could refactor so this isn't necessary
   to_geo <- df
+
+  # because we're helpful, convert borough codes, county names, or borough names
+  # to correct borough codes for GBAT
+  if (zip_boro_type == "borough_code") {
+    to_geo[[zip_boro]] <- tolower(to_geo[[zip_boro]])
+    to_geo[[zip_boro]] <- ifelse(to_geo[[zip_boro]] %in% c("1", "new york", "manhattan", "man", "ny"), "1",
+                            ifelse(to_geo[[zip_boro]] %in% c("2", "bronx", "bx"), "2",
+                              ifelse(to_geo[[zip_boro]] %in% c("3", "kings", "brooklyn", "bk"), "3",
+                                ifelse(to_geo[[zip_boro]] %in% c("4", "queens", "qn", "qns"), "4",
+                                  ifelse(to_geo[[zip_boro]] %in% c("5", "richmond", "staten island", "si"), "5", "0")))))
+  }
 
   # add rownumber as id col for GBAT
   to_geo$id <- seq.int(nrow(to_geo))
@@ -102,13 +118,6 @@ gbat <- function(df, address, zip_boro, zip_boro_type = c("zip", "boro"),
     third_col = zip_boro,
     third_col_type = zip_boro_type
     )
-
-  # we get all factors coming out of the geocoder
-  # convert the input cols to character
-  # is this problematic if user had factors in input table in and wants factors out?
-  # the factors in the gbat geo return columns are handled later when we parse into cols
-  gbat_out[, address] <- as.character(gbat_out[, address])
-  gbat_out[, zip_boro] <- as.character(gbat_out[, zip_boro])
 
   # some special handling in parsing the census tract and block vars
   census_vars <- c("1990CensusTract", "2000CensusTract", "2010CensusTract",
@@ -171,12 +180,13 @@ gbat <- function(df, address, zip_boro, zip_boro_type = c("zip", "boro"),
 
   # should we append the geocoder output to the input data frame?
   # if not just address, borough/zip and geo out cols are returned
+  # TODO: confirm that row order doesn't change with geocoder output or parsing
   if (append) {
-    gbat_out <- cbind(
-      gbat_out[, input_cols],
-      df[, !names(df) %in% input_cols, drop = FALSE],
-      gbat_out[, !names(gbat_out) %in% input_cols, drop = FALSE]
-      )
+    gbat_out <- cbind(df, gbat_out[, !names(gbat_out) %in% input_cols, drop = FALSE])
+  } else {
+    # replace these two output columns from gbat with cols from input data
+    gbat_out[[address]] <- df[[address]]
+    gbat_out[[zip_boro]] <- df[[zip_boro]]
   }
 
   # make it a tibble if the package is installed

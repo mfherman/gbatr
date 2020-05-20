@@ -19,7 +19,12 @@ gbat(
 
 \item{address}{Name of street address column in input data frame}
 
-\item{zip_boro}{Name of zip code or borough code column in input data frame}
+\item{zip_boro}{Name of zip code or borough code column in input data frame.
+For convinience, borough codes in the input data can be borough codes
+(\code{"1"}, \code{"2"}, \code{"3"}, \code{"4"}, \code{"5"}), borough names (\code{"Manhattan"},
+\code{"Bronx"}, \code{"Brooklyn"}, \code{"Queens"}, \code{"Staten Island"}), county names
+(\code{"New York"}, \code{"Bronx"}, \code{"Kings"}, \code{"Queens"}, \code{"Richmond"}), or a mix of
+the three types.}
 
 \item{zip_boro_type}{The \code{zip_boro} column type in the input data frame.
 Either \code{"zip"} or \code{"boro"}, defaults to \code{"zip"}.}
@@ -47,13 +52,22 @@ To make it easier to return certain common fields from the GBAT
 geocoder, there are a handful of "short cuts" you can use in the
 \code{geo_colnames} argument to return certain fields.
 \itemize{
-\item \code{"lot_centrold_xy"} - \code{"F1A_Xcoordinate"}, \code{"F1A_Ycoordinate"}
-\item \code{"lot_centroid_latlon"} - \code{"F1A_Xcoordinate"}, \code{"F1A_Ycoordinate"}
-\item \code{"building_face_xy"} - \code{"F1E_XCoordinate"}, \code{"F1E_YCoordinate"}
-\item \code{"building_face_latlon"} - \code{"F1E_Latitude"}, \code{"F1E_Longitude"}
-\item \code{"cd"} - \code{"F1E_CommunityDistrict"}
-\item \code{"nta"} - \code{"F1E_NTA"}, \code{"F1E_NTAName"}
-\item \code{"census_tract"} - \code{"F1E_2010CensusTractGEOID"}
-\item \code{"census_block"} - \code{"F1E_2010CensusBlockGEOID"}
+\item \code{"lot_centrold_xy"} -- \code{"F1A_Xcoordinate"}, \code{"F1A_Ycoordinate"}
+\item \code{"lot_centroid_latlon"} -- \code{"F1A_Xcoordinate"}, \code{"F1A_Ycoordinate"}
+\item \code{"building_face_xy"} -- \code{"F1E_XCoordinate"}, \code{"F1E_YCoordinate"}
+\item \code{"building_face_latlon"} -- \code{"F1E_Latitude"}, \code{"F1E_Longitude"}
+\item \code{"cd"} -- \code{"F1E_CommunityDistrict"}
+\item \code{"nta"} -- \code{"F1E_NTA"}, \code{"F1E_NTAName"}
+\item \code{"census_tract"} -- \code{"F1E_2010CensusTractGEOID"}
+\item \code{"census_block"} -- \code{"F1E_2010CensusBlockGEOID"}
 }
+}
+\examples{
+
+df <- data.frame(
+  address = c("261 Moore Street", "1524 Neptune Avenue"),
+  zip_code = c("11206", "11224")
+  )
+
+gbat(df, "address", "zip_code", "zip", geo_colnames = "lot_centroid_latlon")
 }
