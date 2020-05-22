@@ -33,7 +33,7 @@ Either \code{"zip"} or \code{"boro"}, defaults to \code{"zip"}.}
 \code{"F1E"}, and \code{"FAP"}. Defaults to all three functions.}
 
 \item{geo_colnames}{A character vector of column names to return from the
-GBAT geocoder or one of more GBAT "short cut." See below for details. If
+GBAT geocoder and/or one or more GBAT "presets." See below for details. If
 \code{NULL} (the default), all GBAT fields are returned.}
 
 \item{append}{Whether or not to append the GBAT geocoder output to the input
@@ -53,9 +53,9 @@ geocoder, there are a handful of "short cuts" you can use in the
 \code{geo_colnames} argument to return certain fields.
 \itemize{
 \item \code{"lot_centrold_xy"} -- \code{"F1A_Xcoordinate"}, \code{"F1A_Ycoordinate"}
-\item \code{"lot_centroid_latlon"} -- \code{"F1A_Xcoordinate"}, \code{"F1A_Ycoordinate"}
-\item \code{"building_face_xy"} -- \code{"F1E_XCoordinate"}, \code{"F1E_YCoordinate"}
-\item \code{"building_face_latlon"} -- \code{"F1E_Latitude"}, \code{"F1E_Longitude"}
+\item \code{"lot_centroid_latlon"} -- \code{"F1A_Latitudee"}, \code{"F1A_Longitude"}
+\item \code{"block_face_xy"} -- \code{"F1E_XCoordinate"}, \code{"F1E_YCoordinate"}
+\item \code{"block_face_latlon"} -- \code{"F1E_Latitude"}, \code{"F1E_Longitude"}
 \item \code{"cd"} -- \code{"F1E_CommunityDistrict"}
 \item \code{"nta"} -- \code{"F1E_NTA"}, \code{"F1E_NTAName"}
 \item \code{"census_tract"} -- \code{"F1E_2010CensusTractGEOID"}

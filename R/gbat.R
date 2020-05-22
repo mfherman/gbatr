@@ -14,7 +14,7 @@
 #' @param zip_boro_type The `zip_boro` column type in the input data frame.
 #'   Either `"zip"` or `"boro"`, defaults to `"zip"`.
 #' @param geo_colnames A character vector of column names to return from the
-#'   GBAT geocoder or one of more GBAT "short cut." See below for details. If
+#'   GBAT geocoder and/or one or more GBAT "presets." See below for details. If
 #'   `NULL` (the default), all GBAT fields are returned.
 #' @param func GBAT output function columns to return. One or more of `"F1A"`,
 #'   `"F1E"`, and `"FAP"`. Defaults to all three functions.
@@ -29,9 +29,9 @@
 #'   `geo_colnames` argument to return certain fields.
 #'
 #'   * `"lot_centrold_xy"` -- `"F1A_Xcoordinate"`, `"F1A_Ycoordinate"`
-#'   * `"lot_centroid_latlon"` -- `"F1A_Xcoordinate"`, `"F1A_Ycoordinate"`
-#'   * `"building_face_xy"` -- `"F1E_XCoordinate"`, `"F1E_YCoordinate"`
-#'   * `"building_face_latlon"` -- `"F1E_Latitude"`, `"F1E_Longitude"`
+#'   * `"lot_centroid_latlon"` -- `"F1A_Latitudee"`, `"F1A_Longitude"`
+#'   * `"block_face_xy"` -- `"F1E_XCoordinate"`, `"F1E_YCoordinate"`
+#'   * `"block_face_latlon"` -- `"F1E_Latitude"`, `"F1E_Longitude"`
 #'   * `"cd"` -- `"F1E_CommunityDistrict"`
 #'   * `"nta"` -- `"F1E_NTA"`, `"F1E_NTAName"`
 #'   * `"census_tract"` -- `"F1E_2010CensusTractGEOID"`
@@ -77,8 +77,8 @@ gbat <- function(df, address, zip_boro, zip_boro_type = c("zip", "boro"),
   short_cuts <- list(
     lot_centroid_xy      = c("F1A_Xcoordinate", "F1A_Ycoordinate"),
     lot_centroid_latlon  = c("F1A_Latitude", "F1A_Longitude"),
-    building_face_xy     = c("F1E_XCoordinate", "F1E_YCoordinate"),
-    building_face_latlon = c("F1E_Latitude", "F1E_Longitude"),
+    block_face_xy        = c("F1E_XCoordinate", "F1E_YCoordinate"),
+    block_face_latlon    = c("F1E_Latitude", "F1E_Longitude"),
     cd                   = "F1E_CommunityDistrict",
     nta                  = c("F1E_NTA", "F1E_NTAName"),
     census_tract         = c("F1E_2010CensusTractGEOID"),
