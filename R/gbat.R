@@ -106,14 +106,14 @@ gbat <- function(df, address, zip_boro, zip_boro_type = c("zip", "boro"),
   }
 
   # add rownumber as id col for GBAT
-  to_geo$id <- seq.int(nrow(to_geo))
+  to_geo$.id772018 <- seq.int(nrow(to_geo))
 
   # run gbat!!!
   # TODO: is it faster if we specify which columns to be returned in the cpp code?
   # may be important if data frame becomes to big for memory
   gbat_out <- GBAT(
     to_geo,
-    id_col = "id",
+    id_col = ".id772018",
     add_col = address,
     third_col = zip_boro,
     third_col_type = zip_boro_type
@@ -153,7 +153,7 @@ gbat <- function(df, address, zip_boro, zip_boro_type = c("zip", "boro"),
     )
 
   # remove gbat output columns and id, create new census cols with geoids
-  gbat_out <- gbat_out[, !names(gbat_out) %in% c("F1A_output", "F1E_output", "FAP_output", "id")]
+  gbat_out <- gbat_out[, !names(gbat_out) %in% c("F1A_output", "F1E_output", "FAP_output", ".id772018")]
   gbat_out <- census_to_geoid(gbat_out)
 
   # if func argument is not all 3, subset gbat output to cols that start with
@@ -188,6 +188,9 @@ gbat <- function(df, address, zip_boro, zip_boro_type = c("zip", "boro"),
     gbat_out[[address]] <- df[[address]]
     gbat_out[[zip_boro]] <- df[[zip_boro]]
   }
+
+  # change all blanks coming out of geocoder to na
+  gbat_out[gbat_out == ""] <- NA
 
   # make it a tibble if the package is installed
   if (requireNamespace("tibble", quietly = TRUE)) {
