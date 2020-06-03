@@ -152,16 +152,64 @@ gbat <- function(df, address, zip_boro, zip_boro_type = c("zip", "boro"),
         }
     )
 
-  # remove gbat output columns and id, create new census cols with geoids
+  # remove gbat output columns and id
   gbat_out <- gbat_out[, !names(gbat_out) %in% c("F1A_output", "F1E_output", "FAP_output", ".id772018")]
-  gbat_out <- census_to_geoid(gbat_out)
+
+  # change all blanks coming out of geocoder to na
+  gbat_out[gbat_out == ""] <- NA
+
+  # TODO once we fix the census tract parsing above, this won't be necessary
+  gbat_out[gbat_out == "0000"] <- NA
+  gbat_out[gbat_out == "000000"] <- NA
+
+  # create new census cols with geoids that will match census files
+  # replace borough codes with borough geoids
+  gbat_out[["F1E_CensusCountyGEOID"]] <- ifelse(gbat_out[["F1E_CensusBoro"]] == 1, "36061",
+                                         ifelse(gbat_out[["F1E_CensusBoro"]] == 2, "36005",
+                                         ifelse(gbat_out[["F1E_CensusBoro"]] == 3, "36047",
+                                         ifelse(gbat_out[["F1E_CensusBoro"]] == 4, "36081",
+                                         ifelse(gbat_out[["F1E_CensusBoro"]] == 5, "36085",
+                                                NA)))))
+
+  # combine county and tract to create geoid
+  gbat_out[["F1E_1990CensusTractGEOID"]] <- ifelse(!is.na(gbat_out[["F1E_1990CensusTract"]]),
+                                                   paste0(gbat_out[["F1E_CensusCountyGEOID"]],
+                                                          gbat_out[["F1E_1990CensusTract"]]),
+                                                   NA)
+
+  gbat_out[["F1E_2000CensusTractGEOID"]] <- ifelse(!is.na(gbat_out[["F1E_2000CensusTract"]]),
+                                                   paste0(gbat_out[["F1E_CensusCountyGEOID"]],
+                                                          gbat_out[["F1E_2000CensusTract"]]),
+                                                   NA)
+
+  gbat_out[["F1E_2010CensusTractGEOID"]] <- ifelse(!is.na(gbat_out[["F1E_2010CensusTract"]]),
+                                                   paste0(gbat_out[["F1E_CensusCountyGEOID"]],
+                                                          gbat_out[["F1E_2010CensusTract"]]),
+                                                   NA)
+
+  # combine tract, block, block suffix to create geoid
+  gbat_out[["F1E_2000CensusBlockGEOID"]] <- ifelse(is.na(gbat_out[["F1E_2000CensusBlock"]]), NA,
+                                            ifelse(!is.na(gbat_out[["F1E_2000CensusBlockSuffix"]]),
+                                                   paste0(gbat_out[["F1E_2000CensusTractGEOID"]],
+                                                          gbat_out[["F1E_2000CensusBlock"]],
+                                                          gbat_out[["F1E_2000CensusBlockSuffix"]]),
+                                                   paste0(gbat_out[["F1E_2000CensusTractGEOID"]],
+                                                          gbat_out[["F1E_2000CensusBlock"]])))
+
+  gbat_out[["F1E_2010CensusBlockGEOID"]] <- ifelse(is.na(gbat_out[["F1E_2010CensusBlock"]]), NA,
+                                            ifelse(!is.na(gbat_out[["F1E_2010CensusBlockSuffix"]]),
+                                                   paste0(gbat_out[["F1E_2010CensusTractGEOID"]],
+                                                          gbat_out[["F1E_2010CensusBlock"]],
+                                                          gbat_out[["F1E_2010CensusBlockSuffix"]]),
+                                                   paste0(gbat_out[["F1E_2010CensusTractGEOID"]],
+                                                          gbat_out[["F1E_2010CensusBlock"]])))
 
   # if func argument is not all 3, subset gbat output to cols that start with
   # specified function
   if (length(func < 3)) {
     func <- paste(func, collapse = "|")
-    gbat_out <- gbat_out[, names(gbat_out) %in% c(input_cols,
-                                               names(gbat_out)[grepl(func, names(gbat_out))])]
+    gbat_out <- gbat_out[, names(gbat_out) %in% c(input_cols, "F1E_GRC",
+                                                  names(gbat_out)[grepl(func, names(gbat_out))])]
   }
 
   # if colnames are specified subset gbat output to return those matching cols
@@ -175,62 +223,32 @@ gbat <- function(df, address, zip_boro, zip_boro_type = c("zip", "boro"),
       geo_colnames <- c(geo_colnames[!geo_colnames %in% names(short_cuts)], cols)
     }
     # and now we'll keep only address/zip/boro and all the geo_colnames specified
-    gbat_out <- gbat_out[, names(gbat_out) %in% c(input_cols, geo_colnames)]
+    gbat_out <- gbat_out[, names(gbat_out) %in% c(input_cols, "F1E_GRC", geo_colnames)]
   }
 
   # should we append the geocoder output to the input data frame?
   # if not just address, borough/zip and geo out cols are returned
   # TODO: confirm that row order doesn't change with geocoder output or parsing
   if (append) {
+    # move return code column to directly after input cols
+    gbat_out <- gbat_out[, c(input_cols, "F1E_GRC", names(gbat_out)[!names(gbat_out) %in% c(input_cols, "F1E_GRC")])]
+
     gbat_out <- cbind(df, gbat_out[, !names(gbat_out) %in% input_cols, drop = FALSE])
+
   } else {
     # replace these two output columns from gbat with cols from input data
     gbat_out[[address]] <- df[[address]]
     gbat_out[[zip_boro]] <- df[[zip_boro]]
+
+    # move return code column to directly after input cols
+    gbat_out <- gbat_out[, c(input_cols, "F1E_GRC", names(gbat_out)[!names(gbat_out) %in% c(input_cols, "F1E_GRC")])]
   }
 
-  # change all blanks coming out of geocoder to na
-  gbat_out[gbat_out == ""] <- NA
-
-  # make it a tibble if the package is installed
-  if (requireNamespace("tibble", quietly = TRUE)) {
+  # make it a tibble if the package is installed and input data was a tibble
+  if (requireNamespace("tibble", quietly = TRUE) && inherits(df, "tbl_df")) {
     gbat_out <- tibble::as_tibble(gbat_out)
   }
 
   gbat_out
-
-}
-
-
-
-
-
-# helper function to convert census fields returned by gbat to geoids
-
-census_to_geoid <- function(df) {
-
-  #add columns for census geographies formatted according to USCB
-  df[["F1E_CensusCountyGEOID"]] <- ifelse(df[["F1E_CensusBoro"]] == 1, "36061",
-                                    ifelse(df[["F1E_CensusBoro"]] == 2, "36005",
-                                           ifelse(df[["F1E_CensusBoro"]] == 3, "36047",
-                                                  ifelse(df[["F1E_CensusBoro"]] == 4, "36081",
-                                                         ifelse(df[["F1E_CensusBoro"]] == 5, "36085", "00000")))))
-
-
-  df[["F1E_1990CensusTractGEOID"]] <- paste0(as.character(df[["F1E_CensusCountyGEOID"]]),
-                                             as.character(df[["F1E_1990CensusTract"]]))
-  df[["F1E_2000CensusTractGEOID"]] <- paste0(as.character(df[["F1E_CensusCountyGEOID"]]),
-                                             as.character(df[["F1E_2000CensusTract"]]))
-  df[["F1E_2010CensusTractGEOID"]] <- paste0(as.character(df[["F1E_CensusCountyGEOID"]]),
-                                             as.character(df[["F1E_2010CensusTract"]]))
-
-  df[["F1E_2000CensusBlockGEOID"]] <- paste0(as.character(df[["F1E_2000CensusTractGEOID"]]),
-                                             as.character(df[["F1E_2000CensusBlock"]]),
-                                             as.character(df[["F1E_2000CensusBlockSuffix"]]))
-  df[["F1E_2010CensusBlockGEOID"]] <- paste0(as.character(df[["F1E_2010CensusTractGEOID"]]),
-                                             as.character(df[["F1E_2010CensusBlock"]]),
-                                             as.character(df[["F1E_2010CensusBlockSuffix"]]))
-
-  df
 
 }
