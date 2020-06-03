@@ -51,15 +51,15 @@ za_geo <- gbat(
   )
 
 za_geo
-#> # A tibble: 6 x 5
-#>   name                address             borough  F1A_Latitude F1A_Longitude
-#>   <chr>               <chr>               <chr>    <chr>        <chr>        
-#> 1 Roberta's           261 Moore Street    Brooklyn 40.705171    -73.934116   
-#> 2 L'Industrie         254 S 2nd Stret     Brooklyn 40.711481    -73.957848   
-#> 3 Emmy Squared        364 Grand Street    Brooklyn 40.712164    -73.955708   
-#> 4 Di Fara             1424 Avenue J       Brooklyn 40.624923    -73.961487   
-#> 5 L&B Spumoni Gardens 2725 86th Street    Brooklyn 40.594672    -73.981269   
-#> 6 Totonno's           1524 Neptune Avenue Brooklyn 40.578802    -73.983811
+#> # A tibble: 6 x 6
+#>   name              address           borough F1E_GRC F1A_Latitude F1A_Longitude
+#>   <chr>             <chr>             <chr>   <chr>   <chr>        <chr>        
+#> 1 Roberta's         261 Moore Street  Brookl~ 00      40.705171    -73.934116   
+#> 2 L'Industrie       254 S 2nd Stret   Brookl~ 00      40.711481    -73.957848   
+#> 3 Emmy Squared      364 Grand Street  Brookl~ 00      40.712164    -73.955708   
+#> 4 Di Fara           1424 Avenue J     Brookl~ 00      40.624923    -73.961487   
+#> 5 L&B Spumoni Gard~ 2725 86th Street  Brookl~ 00      40.594672    -73.981269   
+#> 6 Totonno's         1524 Neptune Ave~ Brookl~ 00      40.578802    -73.983811
 ```
 
 ## Why gbatr?
@@ -173,15 +173,16 @@ gbat(
   zip_boro_type = "boro",
   geo_colnames = c("cd", "nta", "census_tract")
   )
-#> # A tibble: 6 x 7
-#>   name   address  borough  F1E_CommunityDi~ F1E_NTA F1E_NTAName F1E_2010CensusT~
-#>   <chr>  <chr>    <chr>    <chr>            <chr>   <chr>       <chr>           
-#> 1 Rober~ 261 Moo~ Brooklyn 301              BK78    Bushwick S~ 36047048500     
-#> 2 L'Ind~ 254 S 2~ Brooklyn 301              BK73    North Side~ 36047052300     
-#> 3 Emmy ~ 364 Gra~ Brooklyn 301              BK73    North Side~ 36047052300     
-#> 4 Di Fa~ 1424 Av~ Brooklyn 314              BK43    Midwood     36047053400     
-#> 5 L&B S~ 2725 86~ Brooklyn 315              BK29    Bensonhurs~ 36047040200     
-#> 6 Toton~ 1524 Ne~ Brooklyn 313              BK21    Seagate-Co~ 36047034800
+#> # A tibble: 6 x 8
+#>   name  address borough F1E_GRC F1E_CommunityDi~ F1E_NTA F1E_NTAName
+#>   <chr> <chr>   <chr>   <chr>   <chr>            <chr>   <chr>      
+#> 1 Robe~ 261 Mo~ Brookl~ 00      301              BK78    Bushwick S~
+#> 2 L'In~ 254 S ~ Brookl~ 00      301              BK73    North Side~
+#> 3 Emmy~ 364 Gr~ Brookl~ 00      301              BK73    North Side~
+#> 4 Di F~ 1424 A~ Brookl~ 00      314              BK43    Midwood    
+#> 5 L&B ~ 2725 8~ Brookl~ 00      315              BK29    Bensonhurs~
+#> 6 Toto~ 1524 N~ Brookl~ 00      313              BK21    Seagate-Co~
+#> # ... with 1 more variable: F1E_2010CensusTractGEOID <chr>
 ```
 
 #### Column names
@@ -214,15 +215,15 @@ gbat(
   zip_boro_type = "boro",
   geo_colnames = c("lot_centroid_latlon", "F1E_BBL")
   )
-#> # A tibble: 6 x 6
-#>   name             address          borough F1E_BBL   F1A_Latitude F1A_Longitude
-#>   <chr>            <chr>            <chr>   <chr>     <chr>        <chr>        
-#> 1 Roberta's        261 Moore Street Brookl~ 30310100~ 40.705171    -73.934116   
-#> 2 L'Industrie      254 S 2nd Stret  Brookl~ 30242000~ 40.711481    -73.957848   
-#> 3 Emmy Squared     364 Grand Street Brookl~ 30239600~ 40.712164    -73.955708   
-#> 4 Di Fara          1424 Avenue J    Brookl~ 30671600~ 40.624923    -73.961487   
-#> 5 L&B Spumoni Gar~ 2725 86th Street Brookl~ 30711600~ 40.594672    -73.981269   
-#> 6 Totonno's        1524 Neptune Av~ Brookl~ 30702200~ 40.578802    -73.983811
+#> # A tibble: 6 x 7
+#>   name         address       borough F1E_GRC F1E_BBL  F1A_Latitude F1A_Longitude
+#>   <chr>        <chr>         <chr>   <chr>   <chr>    <chr>        <chr>        
+#> 1 Roberta's    261 Moore St~ Brookl~ 00      3031010~ 40.705171    -73.934116   
+#> 2 L'Industrie  254 S 2nd St~ Brookl~ 00      3024200~ 40.711481    -73.957848   
+#> 3 Emmy Squared 364 Grand St~ Brookl~ 00      3023960~ 40.712164    -73.955708   
+#> 4 Di Fara      1424 Avenue J Brookl~ 00      3067160~ 40.624923    -73.961487   
+#> 5 L&B Spumoni~ 2725 86th St~ Brookl~ 00      3071160~ 40.594672    -73.981269   
+#> 6 Totonno's    1524 Neptune~ Brookl~ 00      3070220~ 40.578802    -73.983811
 ```
 
 #### Geosupport functions
@@ -255,15 +256,16 @@ gbat(
   zip_boro_type = "boro",
   geo_colnames = c("lot_centroid_latlon", "block_face_latlon")
   )
-#> # A tibble: 6 x 7
-#>   name    address  borough F1E_Latitude F1E_Longitude F1A_Latitude F1A_Longitude
-#>   <chr>   <chr>    <chr>   <chr>        <chr>         <chr>        <chr>        
-#> 1 Robert~ 261 Moo~ Brookl~ 40.704825    -73.934015    40.705171    -73.934116   
-#> 2 L'Indu~ 254 S 2~ Brookl~ 40.711728    -73.957887    40.711481    -73.957848   
-#> 3 Emmy S~ 364 Gra~ Brookl~ 40.712331    -73.955679    40.712164    -73.955708   
-#> 4 Di Fara 1424 Av~ Brookl~ 40.625105    -73.962020    40.624923    -73.961487   
-#> 5 L&B Sp~ 2725 86~ Brookl~ 40.594401    -73.981359    40.594672    -73.981269   
-#> 6 Totonn~ 1524 Ne~ Brookl~ 40.579118    -73.983430    40.578802    -73.983811
+#> # A tibble: 6 x 8
+#>   name  address borough F1E_GRC F1E_Latitude F1E_Longitude F1A_Latitude
+#>   <chr> <chr>   <chr>   <chr>   <chr>        <chr>         <chr>       
+#> 1 Robe~ 261 Mo~ Brookl~ 00      40.704825    -73.934015    40.705171   
+#> 2 L'In~ 254 S ~ Brookl~ 00      40.711728    -73.957887    40.711481   
+#> 3 Emmy~ 364 Gr~ Brookl~ 00      40.712331    -73.955679    40.712164   
+#> 4 Di F~ 1424 A~ Brookl~ 00      40.625105    -73.962020    40.624923   
+#> 5 L&B ~ 2725 8~ Brookl~ 00      40.594401    -73.981359    40.594672   
+#> 6 Toto~ 1524 N~ Brookl~ 00      40.579118    -73.983430    40.578802   
+#> # ... with 1 more variable: F1A_Longitude <chr>
 ```
 
 ### Dealing with failure
