@@ -21,6 +21,8 @@ knitr::opts_chunk$set(
 
 **gbatr** is an interface to [Geosupport Dektop Edition](https://www1.nyc.gov/site/planning/data-maps/open-data/dwn-gde-home.page), a batch geocoder for New York City created by the NYC Department of City Planning. It enables very fast local geocoding of NYC addresses. This is a fork of the [rGBAT16AB pacakge](https://github.com/gmculp/rGBAT16AB) developed by GM Culp.
 
+*NOTE: This is very much a work-in-progress and is very likely to change. If you would like to help with development, please send me a message or open an issue!*
+
 ## Example
 
 To use gbatr to geocode addresses, first prepare a data frame that contains a column of street addresses and a column with either zip codes or boroughs. Note, this only works for addresses in New York City! The zip or borough column must all zip codes or all boroughs, not a mix of both.

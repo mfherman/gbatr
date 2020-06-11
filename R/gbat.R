@@ -57,6 +57,11 @@ gbat <- function(df, address, zip_boro, zip_boro_type = c("zip", "boro"),
     stop("You must supply a data frame as input to be geocoded", call. = FALSE)
   }
 
+  # check that input data frame as at least one row
+  if (nrow(df) == 0) {
+    stop("Your input data frame doesn't have any rows", call. = FALSE)
+  }
+
   # check that address and zip or boro column name supplied is in input df
   input_cols <- c(address, zip_boro)
   if (!all(input_cols %in% names(df))) {
@@ -99,10 +104,11 @@ gbat <- function(df, address, zip_boro, zip_boro_type = c("zip", "boro"),
   if (zip_boro_type == "borough_code") {
     to_geo[[zip_boro]] <- tolower(to_geo[[zip_boro]])
     to_geo[[zip_boro]] <- ifelse(to_geo[[zip_boro]] %in% c("1", "new york", "manhattan", "man", "ny"), "1",
-                            ifelse(to_geo[[zip_boro]] %in% c("2", "bronx", "bx"), "2",
-                              ifelse(to_geo[[zip_boro]] %in% c("3", "kings", "brooklyn", "bk"), "3",
-                                ifelse(to_geo[[zip_boro]] %in% c("4", "queens", "qn", "qns"), "4",
-                                  ifelse(to_geo[[zip_boro]] %in% c("5", "richmond", "staten island", "si"), "5", "0")))))
+                          ifelse(to_geo[[zip_boro]] %in% c("2", "bronx", "bx"), "2",
+                          ifelse(to_geo[[zip_boro]] %in% c("3", "kings", "brooklyn", "bk"), "3",
+                          ifelse(to_geo[[zip_boro]] %in% c("4", "queens", "qn", "qns"), "4",
+                          ifelse(to_geo[[zip_boro]] %in% c("5", "richmond", "staten island", "si"), "5",
+                                 "0")))))
   }
 
   # add rownumber as id col for GBAT

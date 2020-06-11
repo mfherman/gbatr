@@ -16,6 +16,10 @@ Planning. It enables very fast local geocoding of NYC addresses. This is
 a fork of the [rGBAT16AB pacakge](https://github.com/gmculp/rGBAT16AB)
 developed by GM Culp.
 
+*NOTE: This is very much a work-in-progress and is very likely to
+change. If you would like to help with development, please send me a
+message or open an issue\!*
+
 ## Example
 
 To use gbatr to geocode addresses, first prepare a data frame that

@@ -10,6 +10,7 @@ za <- data.frame(
 test_that("input data validation works", {
   expect_error(gbat(1), "You must supply a data frame")
   expect_error(gbat(as.matrix(iris)), "You must supply a data frame")
+  expect_error(gbat(data.frame()), "Your input data frame doesn't have any rows")
   expect_error(gbat(za, "a", "b"), "names not found in input data frame")
   expect_error(gbat(za, "address", "borough", "zipp"), "should be one of \"zip\", \"boro\"")
   expect_error(gbat(za, "address", "borough", func = "F1a"), "should be one of \"F1A\", \"F1E\", \"FAP\"")
@@ -35,7 +36,6 @@ test_that("output df identical to input df", {
   expect_identical(gbat(tibble::as_tibble(za), "address", "borough", "boro")[, 1:3],
                    tibble::as_tibble(za)[, 1:3])
   expect_s3_class(gbat(tibble::as_tibble(za), "address", "borough", "boro"), "tbl_df")
-
   })
 
 
